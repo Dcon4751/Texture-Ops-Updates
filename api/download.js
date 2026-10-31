@@ -1,5 +1,11 @@
+import { get } from "@vercel/blob";
+
 const GUMROAD_VERIFY_URL = "https://api.gumroad.com/v2/licenses/verify";
 const PRODUCT_ID = "1y8BSLIKyKyUf4gWd6_uAw==";
+
+const RELEASE_VERSION = "1.0.6";
+const RELEASE_PATHNAME = "releases/Texture_Ops_v1.0.6.zip";
+const RELEASE_SHA256 = "451615a811cfde3bee35f147a684b504c534f94a6d52e151b5add62dc8786991";
 
 async function verifyLicense(licenseKey) {
   const body = new URLSearchParams({
@@ -23,8 +29,7 @@ async function verifyLicense(licenseKey) {
   if (purchase.refunded || purchase.disputed || purchase.chargebacked) {
     return { ok: false, reason: "License is no longer eligible for updates." };
   }
-
-  return { ok: true, purchase };
+  return { ok: true };
 }
 
 export default async function handler(req, res) {
@@ -43,21 +48,20 @@ export default async function handler(req, res) {
     return res.status(403).json({ ok: false, error: verified.reason });
   }
 
-  const releaseUrl = process.env.TEXTURE_OPS_RELEASE_URL;
-  const releaseSha256 = process.env.TEXTURE_OPS_RELEASE_SHA256;
-  const releaseVersion = process.env.TEXTURE_OPS_RELEASE_VERSION || "1.0.5";
-
-  if (!releaseUrl || !releaseSha256) {
-    return res.status(503).json({
-      ok: false,
-      error: "Update package is not configured on the server yet.",
-    });
+  const result = await get(RELEASE_PATHNAME, { access: "private" });
+  if (!result || result.statusCode !== 200) {
+    return res.status(503).json({ ok: false, error: "Release package is not available yet." });
   }
 
-  return res.status(200).json({
-    ok: true,
-    version: releaseVersion,
-    download_url: releaseUrl,
-    sha256: releaseSha256,
-  });
+  res.setHeader("Content-Type", "application/zip");
+  res.setHeader("Content-Disposition", 'attachment; filename="Texture_Ops_v1.0.6.zip"');
+  res.setHeader("X-Texture-Ops-Version", RELEASE_VERSION);
+  res.setHeader("X-Texture-Ops-SHA256", RELEASE_SHA256);
+  res.setHeader("Cache-Control", "private, no-store");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+
+  for await (const chunk of result.stream) {
+    res.write(chunk);
+  }
+  res.end();
 }
