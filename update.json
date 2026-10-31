@@ -1,6 +1,7 @@
 {
-  "version": "1.0.5",
+  "version": "1.0.6",
+  "download_api": "https://texture-ops-updates.vercel.app/api/download",
   "download_url": "",
-  "sha256": "9463b9fc5e9cd68dd728d7a8bc6399b6d9f534a00f58ce922974f5bc95336712",
-  "notes": "Texture Ops v1.0.5 is now available on Gumroad. Includes custom vault location, updater fixes, license persistence improvements, and operator animation reset improvements."
+  "sha256": "451615a811cfde3bee35f147a684b504c534f94a6d52e151b5add62dc8786991",
+  "notes": "Texture Ops v1.0.6 is the secure updater bridge release. It adds protected in-tool updates through Gumroad license verification and private Vercel release storage."
 }
