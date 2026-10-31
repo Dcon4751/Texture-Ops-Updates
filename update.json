@@ -1,6 +1,6 @@
 {
-  "version": "1.0.4",
+  "version": "1.0.5",
   "download_url": "",
-  "sha256": "",
-  "notes": "Texture Ops v1.0.4 is the current official Gumroad release."
+  "sha256": "9463b9fc5e9cd68dd728d7a8bc6399b6d9f534a00f58ce922974f5bc95336712",
+  "notes": "Texture Ops v1.0.5 is now available on Gumroad. Includes custom vault location, updater fixes, license persistence improvements, and operator animation reset improvements."
 }
